@@ -36,14 +36,14 @@ def scan_label(image_path):
         return f"OCR Error: {e}"
 
 if __name__ == "__main__":
-    test_image = "sample.png" 
+    test_image = "sample2.jpg" 
     print(f"--- Scanning {test_image} ---")
     
     result = scan_label(test_image)
     print("Extracted Text:")
-    print("-" * 20)
+    print("*" * 20)
     print(result)
-    print("-" * 20)
+    print("*" * 20)
 
 
 
