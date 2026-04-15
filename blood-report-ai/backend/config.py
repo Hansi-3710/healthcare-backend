@@ -5,6 +5,7 @@ All environment variables loaded from .env
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 import logging
+from typing import List
 
 class Settings(BaseSettings):
     # ── Supabase ──────────────────────────────────────────────
@@ -49,7 +50,7 @@ class Settings(BaseSettings):
         case_sensitive = False
 
     @property
-    def origins_list(self) -> list[str]:
+    def origins_list(self) -> List[str]:
         """Parse origins from comma-separated string."""
         return [o.strip() for o in self.allowed_origins.split(",") if o.strip()]
 

@@ -67,7 +67,7 @@ async def get_current_user(
 
 
 async def get_current_user_optional(
-    creds: Optional[HTTPAuthorizationCredentials] = Depends(bearer)
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
 ) -> Optional[dict]:
     """
     Optional auth — returns user if token provided and valid, None otherwise.
@@ -76,6 +76,22 @@ async def get_current_user_optional(
     if not creds:
         return None
     try:
-        return await get_current_user(creds)
-    except HTTPException:
+        # Manually call JWT validation since we bypassed auto_error
+        token = creds.credentials
+        payload = jwt.decode(
+            token,
+            settings.supabase_jwt_secret,
+            algorithms=["HS256"],
+            options={"verify_aud": False}
+        )
+        user_id = payload.get("sub")
+        if not user_id:
+            return None
+        return {
+            "user_id": user_id,
+            "email": payload.get("email", ""),
+            "raw_token": token,
+            "payload": payload
+        }
+    except Exception:
         return None
